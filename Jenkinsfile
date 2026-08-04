@@ -11,7 +11,7 @@ podTemplate(yaml: readTrusted('pod.yaml')) {
             }
         }
         stage('image build') {
-            container('java-build') {
+            container('buildkit') {
                 sh"""
                     buildctl --addr tcp://buildkitd.devops-tools.svc.cluster.local:1234\
                     --tlscacert /certs/ca.pem\
