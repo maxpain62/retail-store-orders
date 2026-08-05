@@ -49,8 +49,8 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume
-          imagePullSecret:
-            -name: ecr-cred
+      imagePullSecret:
+        -name: ecr-cred
       volumes:
         - name: tmp-volume
           emptyDir:
