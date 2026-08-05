@@ -11,3 +11,39 @@ spec:
     - port: {{ .Values.containers.ports.containerPort }}
       targetPort: {{ .Values.containers.ports.containerPort }}
   type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.metadata.labels.app }}-rabbitmq-service
+  labels:
+    app: {{ .Values.metadata.labels.app }}-rabbitmq
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5672
+      targetPort: amqp
+      protocol: TCP
+      name: amqp
+    - port: 15672
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Values.metadata.labels.app }}-rabbitmq
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.metadata.labels.app }}-postgresql-service
+  labels:
+    app: {{ .Values.metadata.labels.app }}-postgresql
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: postgresql
+      protocol: TCP
+      name: postgresql
+  selector:
+    app: {{ .Values.metadata.labels.app }}-postgresql
