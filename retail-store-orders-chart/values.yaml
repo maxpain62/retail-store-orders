@@ -5,7 +5,5 @@ metadata:
 containers:
   ports:
     containerPort: 8080
-
-image:
-  reposirory: 134448505602.dkr.ecr.ap-south-1.amazonaws.com
-  tag: latest
+  image: 134448505602.dkr.ecr.ap-south-1.amazonaws.com/retail-store-orders
+  imagetag: latest
