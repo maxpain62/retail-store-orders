@@ -117,12 +117,12 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.metadata.labels.app }}-db
+                  name: {{ .Values.metadata.labels.app }}-db-secret
                   key: RETAIL_ORDERS_PERSISTENCE_USERNAME
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.metadata.labels.app }}-db
+                  name: {{ .Values.metadata.labels.app }}-db-secret
                   key: RETAIL_ORDERS_PERSISTENCE_PASSWORD
             - name: PGDATA
               value: /data/pgdata
