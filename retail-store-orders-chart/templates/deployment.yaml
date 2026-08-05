@@ -22,6 +22,8 @@ spec:
                 name: {{ .Values.metadata.labels.app }}-configmap
             - secretRef:
                 name: {{ .Values.metadata.labels.app }}-db-secret
+            - secretRef:
+                name: {{ .Values.metadata.labels.app }}-rabbitmq-secret
           resources:
             requests:
               cpu: "100m"
