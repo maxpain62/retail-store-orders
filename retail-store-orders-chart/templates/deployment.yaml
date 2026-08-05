@@ -25,20 +25,20 @@ spec:
           resources:
             requests:
               cpu: "100m"
-              memory: "64Mi"
+              memory: "128Mi"
             limits:
               cpu: "200m"
-              memory: "128Mi"
+              memory: "256Mi"
           livenessProbe:
             httpGet:
-              path: /
+              path: /actuator/health
               port: {{ .Values.containers.ports.containerPort }}
             initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 5     
           readinessProbe:
             httpGet:
-              path: /
+              path: /actuator/health
               port: {{ .Values.containers.ports.containerPort }}
             initialDelaySeconds: 60
             periodSeconds: 10
@@ -49,6 +49,8 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume
+          imagePullSecret:
+            -name: ecr-cred
       volumes:
         - name: tmp-volume
           emptyDir:
