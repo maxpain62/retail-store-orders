@@ -17,6 +17,11 @@ spec:
       containers:
         - name: {{ .Values.metadata.labels.app }}-container
           image: {{ .Values.containers.image }}:{{ .Values.containers.imagetag }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.metadata.labels.app }}-configmap
+            - secretRef:
+                name: {{ .Values.metadata.labels.app }}-db-secret
           resources:
             requests:
               cpu: "100m"
@@ -41,3 +46,91 @@ spec:
           ports:
             - containerPort: {{ .Values.containers.ports.containerPort }}
               protocol: TCP
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.metadata.labels.app }}-rabbitmq-statefulset
+  labels:
+    app: {{ .Values.metadata.labels.app }}-rabbitmq
+spec:
+  replicas: 1
+  serviceName: {{ .Values.metadata.labels.app }}-rabbitmq-service
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.labels.app }}-rabbitmq
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.labels.app }}-rabbitmq
+    spec:
+      containers:
+        - name: {{ .Values.metadata.labels.app }}-rabbitmq-container
+          image: "public.ecr.aws/docker/library/rabbitmq:3-management"
+          imagePullPolicy: IfNotPresent
+          ports:
+          - name: amqp
+            containerPort: 5672
+            protocol: TCP
+          - name: http
+            containerPort: 15672
+            protocol: TCP
+          volumeMounts:
+          - name: data
+            mountPath: "/var/lib/rabbitmq/mnesia"
+      volumes:
+      - name: data
+        emptyDir: {}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.metadata.labels.app }}-postgresql-statefulset
+  labels:
+spec:
+  replicas: 1
+  serviceName: {{ .Values.metadata.labels.app }}-postgresql-service
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.labels.app }}-postgresql
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.labels.app }}-postgresql
+    spec:
+      containers:
+        - name: {{ .Values.metadata.labels.app }}-postgresql-container
+          image: "public.ecr.aws/docker/library/postgres:16.1"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_DB
+              value: orders
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.metadata.labels.app }}-db
+                  key: RETAIL_ORDERS_PERSISTENCE_USERNAME
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.metadata.labels.app }}-db
+                  key: RETAIL_ORDERS_PERSISTENCE_PASSWORD
+            - name: PGDATA
+              value: /data/pgdata
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          ports:
+            - name: postgresql
+              containerPort: 5432
+              protocol: TCP
+      volumes:
+      - name: data
+        emptyDir: {}
