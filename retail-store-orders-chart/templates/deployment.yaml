@@ -50,7 +50,7 @@ spec:
             - mountPath: /tmp
               name: tmp-volume
       imagePullSecrets:
-        -name: ecr-cred
+        - name: ecr-cred
       volumes:
         - name: tmp-volume
           emptyDir:
