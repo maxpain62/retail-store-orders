@@ -8,3 +8,4 @@ data:
   RETAIL_ORDERS_PERSISTENCE_PROVIDER: postgres
   RETAIL_ORDERS_PERSISTENCE_ENDPOINT: {{ .Values.metadata.labels.app }}-postgresql-service:5432
   RETAIL_ORDERS_PERSISTENCE_NAME: orders
+  SPRING_PROFILES_ACTIVE: prod
