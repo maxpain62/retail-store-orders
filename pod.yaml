@@ -20,7 +20,7 @@ spec:
         - name: certs
           mountPath: /certs
     - name: java-build
-      image: eclipse-temurin:21.0.11_10-jdk-resolute
+      image: 134448505602.dkr.ecr.ap-south-1.amazonaws.com/builder:retail-store-orders-latest
       command:
         - cat
       tty: true
