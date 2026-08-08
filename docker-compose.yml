@@ -1,18 +1,54 @@
 services:
+#  orders:
+#    build:
+#      context: .
+#    hostname: orders
+#    restart: always
+#    cap_drop:
+#      - all
+#    cap_add:
+#      - NET_BIND_SERVICE
+#    read_only: true
+#    security_opt:
+#      - no-new-privileges:true
+#    tmpfs:
+#      - /tmp:rw,noexec,nosuid
+#    environment:
+#      - reschedule=on-node-failure
+#      - SERVER_TOMCAT_ACCESSLOG_ENABLED=true
+#      - RETAIL_ORDERS_PERSISTENCE_PROVIDER=postgres
+#      - RETAIL_ORDERS_PERSISTENCE_ENDPOINT=orders-db:5432
+#      - RETAIL_ORDERS_PERSISTENCE_NAME=orders
+#      - RETAIL_ORDERS_PERSISTENCE_USERNAME=orders_user
+#      - RETAIL_ORDERS_PERSISTENCE_PASSWORD=${DB_PASSWORD}
+#      - RETAIL_ORDERS_MESSAGING_PROVIDER=rabbitmq
+#      - RETAIL_ORDERS_MESSAGING_RABBITMQ_ADDRESSES=rabbitmq:5672
+#      - RETAIL_ORDERS_MESSAGING_RABBITMQ_USERNAME=rabbitmq
+#      - RETAIL_ORDERS_MESSAGING_RABBITMQ_PASSWORD=${DB_PASSWORD}
+#    ports:
+#      - "8083:8080"
+#    depends_on:
+#      orders-db:
+#        condition: service_healthy
+#        restart: true
+#    healthcheck:
+#      test:
+#        ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+#      interval: 10s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 15s
+#    develop:
+#      watch:
+#        - action: rebuild
+#          path: src
+#        - action: rebuild
+#          path: pom.xml
+
   orders:
-    build:
-      context: .
+    image: 134448505602.dkr.ecr.ap-south-1.amazonaws.com/retail-store-orders:latest
     hostname: orders
     restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
-    security_opt:
-      - no-new-privileges:true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
       - SERVER_TOMCAT_ACCESSLOG_ENABLED=true
@@ -25,8 +61,8 @@ services:
       - RETAIL_ORDERS_MESSAGING_RABBITMQ_ADDRESSES=rabbitmq:5672
       - RETAIL_ORDERS_MESSAGING_RABBITMQ_USERNAME=rabbitmq
       - RETAIL_ORDERS_MESSAGING_RABBITMQ_PASSWORD=${DB_PASSWORD}
-    ports:
-      - "8083:8080"
+    ports: 
+      - "8080:8080"
     depends_on:
       orders-db:
         condition: service_healthy
@@ -38,12 +74,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 15s
-    develop:
-      watch:
-        - action: rebuild
-          path: src
-        - action: rebuild
-          path: pom.xml
 
   # nosemgrep: yaml.docker-compose.security.writable-filesystem-service.writable-filesystem-service
   orders-db:
