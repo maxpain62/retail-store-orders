@@ -79,6 +79,15 @@ spec:
         - name: {{ .Values.metadata.labels.app }}-rabbitmq-container
           image: "public.ecr.aws/docker/library/rabbitmq:3-management"
           imagePullPolicy: IfNotPresent
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                name: {{ .Values.metadata.labels.app }}-rabbitmq-secret
+                key: RETAIL_ORDERS_MESSAGING_RABBITMQ_USERNAME
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                name: {{ .Values.metadata.labels.app }}-rabbitmq-secret
+                key: RETAIL_ORDERS_MESSAGING_RABBITMQ_PASSWORD
           ports:
           - name: amqp
             containerPort: 5672
