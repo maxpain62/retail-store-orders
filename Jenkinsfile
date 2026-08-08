@@ -6,6 +6,7 @@ podTemplate(yaml: readTrusted('pod.yaml')) {
         stage('build') {
             container('java-build') {
                 sh'''
+                ./mvnw dependency:go-offline -B -q
                 ./mvnw -DskipTests clean package
                 '''
             }
